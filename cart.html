@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shopping Cart</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #6366f1;
+      --secondary-color: #8b5cf6;
+      --danger-color: #ef4444;
+      --success-color: #10b981;
+      --dark-bg: #0f172a;
+      --card-bg: #1e293b;
+      --card-hover: #334155;
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --border-color: #334155;
+    }
+
+    body {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      min-height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: var(--text-primary);
+    }
+
+    .main-container {
+      background: rgba(30, 41, 59, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      padding: 2rem;
+      margin-top: 2rem;
+      margin-bottom: 2rem;
+      border: 1px solid var(--border-color);
+    }
+
+    .page-header {
+      background: linear-gradient(135deg, #1e293b, #334155);
+      color: white;
+      padding: 2rem;
+      border-radius: 15px;
+      margin-bottom: 2rem;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border-color);
+    }
+
+    .page-header h2 {
+      font-weight: 700;
+      margin: 0;
+      font-size: 2rem;
+      color: var(--text-primary);
+    }
+
+    .page-header p {
+      margin: 0.5rem 0 0 0;
+      opacity: 0.8;
+      color: var(--text-secondary);
+    }
+
+    .btn-home {
+      background: var(--card-bg);
+      color: var(--text-primary);
+      border: 2px solid var(--border-color);
+      padding: 0.75rem 2rem;
+      border-radius: 50px;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-home:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+      color: var(--primary-color);
+      border-color: var(--primary-color);
+      background: var(--card-hover);
+    }
+
+    .cart-stats {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .stat-card {
+      flex: 1;
+      min-width: 200px;
+      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      color: white;
+      padding: 1.5rem;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border-color);
+    }
+
+    .stat-card h6 {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .stat-card .value {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--primary-color);
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .product-card {
+      background: var(--card-bg);
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      transition: all 0.3s ease;
+      border: 1px solid var(--border-color);
+    }
+
+    .product-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
+      border-color: var(--primary-color);
+      background: var(--card-hover);
+    }
+
+    .product-image {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      background: #334155;
+    }
+
+    .product-body {
+      padding: 1.25rem;
+    }
+
+    .product-title {
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .product-description {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+
+    .product-price {
+      color: var(--primary-color);
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .product-actions {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .btn-remove {
+      background: var(--danger-color);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      flex: 1;
+    }
+
+    .btn-remove:hover {
+      background: #dc2626;
+      transform: scale(1.05);
+    }
+
+    .quantity-control {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #334155;
+      padding: 0.25rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+
+    .quantity-control button {
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      width: 30px;
+      height: 30px;
+      border-radius: 6px;
+      font-weight: 700;
+      transition: all 0.2s ease;
+    }
+
+    .quantity-control button:hover {
+      background: var(--secondary-color);
+      transform: scale(1.1);
+    }
+
+    .quantity-control span {
+      min-width: 30px;
+      text-align: center;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .empty-cart {
+      text-align: center;
+      padding: 4rem 2rem;
+    }
+
+    .empty-cart-icon {
+      font-size: 5rem;
+      color: #475569;
+      margin-bottom: 1rem;
+    }
+
+    .empty-cart h4 {
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .empty-cart p {
+      color: var(--text-secondary);
+    }
+
+    .checkout-section {
+      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      color: white;
+      padding: 2rem;
+      border-radius: 15px;
+      margin-top: 2rem;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border-color);
+    }
+
+    .checkout-section h4 {
+      margin-bottom: 1rem;
+      color: var(--text-primary);
+    }
+
+    .checkout-section p {
+      color: var(--text-secondary);
+    }
+
+    .btn-checkout {
+      background: var(--success-color);
+      color: white;
+      border: none;
+      padding: 1rem 3rem;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+    }
+
+    .btn-checkout:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+      background: #059669;
+    }
+
+    @media (max-width: 768px) {
+      .main-container {
+        padding: 1rem;
+        margin-top: 1rem;
+      }
+
+      .page-header h2 {
+        font-size: 1.5rem;
+      }
+
+      .product-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="main-container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <a href="home.html" class="btn-home">
+        <span>←</span> Kembali ke Home
+      </a>
+    </div>
+
+    <div class="page-header">
+      <h2>🛒 Keranjang Belanja</h2>
+    </div>
+
+    
+
+    <div class="product-grid js-display-cart-content">
+      <!-- Product Card 1 -->
+      <div class="product-card">
+        <img src="https://via.placeholder.com/280x200/334155/6366f1?text=Product+1" alt="Product 1" class="product-image">
+        <div class="product-body">
+    </div>
+  </div>
+
+<script type="module" src="displayCart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
